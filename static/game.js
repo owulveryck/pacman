@@ -14,6 +14,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if we're on a mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
+    // Adjust canvas size for mobile if needed
+    function resizeCanvas() {
+        if (isMobile) {
+            // Get the container width for responsive sizing
+            const containerWidth = canvas.parentElement.clientWidth * 0.95;
+            
+            // Maintain aspect ratio of the original game (448×496)
+            const aspectRatio = 496/448;
+            
+            const newWidth = Math.min(containerWidth, window.innerWidth * 0.95);
+            const newHeight = newWidth * aspectRatio;
+            
+            // Set canvas display size (CSS)
+            canvas.style.width = newWidth + 'px';
+            canvas.style.height = newHeight + 'px';
+        }
+    }
+    
+    // Initial resize and add event listener for orientation changes
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
+    
     // Using Web Audio API for sound effects
     
     // Use these simple audio beeps instead of MP3 files
@@ -271,6 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Mouse events for testing on desktop
         button.addEventListener('mousedown', () => {
+            pacman.nextDirection = direction;
+        });
+        
+        // Add click handler for mobile devices that might interpret taps as clicks
+        button.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent any default behavior
             pacman.nextDirection = direction;
         });
     }

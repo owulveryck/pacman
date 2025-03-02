@@ -4,13 +4,14 @@ body {
     color: #fff;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 10px 0;
     margin: 0;
     touch-action: manipulation; /* Prevents browser handling of touch gestures */
     -webkit-touch-callout: none; /* Prevents iOS callout when holding a tap */
     -webkit-user-select: none; /* Prevents text selection */
     user-select: none;
     overflow: hidden; /* Prevents scrolling */
+    box-sizing: border-box;
 }
 
 .game-container {
@@ -90,17 +91,33 @@ input[type="checkbox"] {
     canvas {
         max-width: 100%;
         height: auto;
+        width: 95vw; /* Take up 95% of the viewport width */
     }
     
     .game-container {
         width: 100%;
+        padding: 0;
+        margin: 0 auto;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin: 10px 0;
+    }
+    
+    .score-container {
+        margin-bottom: 5px;
+    }
+    
+    .controls {
+        margin-top: 10px;
     }
 }
 
 .d-pad {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 160px;
+    height: 160px;
     margin: 0 auto;
 }
 
