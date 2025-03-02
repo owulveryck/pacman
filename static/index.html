@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacman Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Pacman Web</h1>
+        <div class="score-container">
+            <span>Score: </span><span id="score">0</span>
+        </div>
+        <canvas id="gameCanvas" width="448" height="496"></canvas>
+        <div class="controls">
+            <button id="startButton">Start Game</button>
+            <div class="sound-control">
+                <input type="checkbox" id="soundToggle" checked>
+                <label for="soundToggle">Sound</label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- No need for audio elements anymore, using WebAudio API instead -->
+    
+    <script src="game.js"></script>
+</body>
+</html>
