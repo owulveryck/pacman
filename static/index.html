@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pacman Web</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -18,6 +18,16 @@
             <div class="sound-control">
                 <input type="checkbox" id="soundToggle" checked>
                 <label for="soundToggle">Sound</label>
+            </div>
+        </div>
+        <!-- Mobile controls -->
+        <div class="mobile-controls">
+            <div class="d-pad">
+                <button id="upButton" class="d-pad-button up-button">▲</button>
+                <button id="leftButton" class="d-pad-button left-button">◄</button>
+                <button id="rightButton" class="d-pad-button right-button">►</button>
+                <button id="downButton" class="d-pad-button down-button">▼</button>
+                <div class="d-pad-center"></div>
             </div>
         </div>
     </div>

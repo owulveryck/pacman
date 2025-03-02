@@ -6,6 +6,11 @@ body {
     justify-content: center;
     padding: 20px;
     margin: 0;
+    touch-action: manipulation; /* Prevents browser handling of touch gestures */
+    -webkit-touch-callout: none; /* Prevents iOS callout when holding a tap */
+    -webkit-user-select: none; /* Prevents text selection */
+    user-select: none;
+    overflow: hidden; /* Prevents scrolling */
 }
 
 .game-container {
@@ -62,4 +67,103 @@ input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
+}
+
+/* Mobile controls styling */
+.mobile-controls {
+    margin-top: 20px;
+    display: none; /* Hidden by default, will be shown on mobile */
+}
+
+/* Always show on touch devices, use media query as fallback */
+@media (pointer: coarse) {
+    .mobile-controls {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: block;
+    }
+    
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .game-container {
+        width: 100%;
+    }
+}
+
+.d-pad {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+}
+
+.d-pad-button {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 0, 0.6);
+    border: 2px solid #0000FF;
+    border-radius: 12px;
+    color: #0000FF;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent; /* Removes the highlight on tap */
+}
+
+.d-pad-button:active {
+    background-color: #FFFF00;
+}
+
+.up-button {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.down-button {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.left-button {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.right-button {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.d-pad-center {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #333;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: -1;
 }

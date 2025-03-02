@@ -5,6 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreElement = document.getElementById('score');
     const soundToggle = document.getElementById('soundToggle');
     
+    // Mobile control buttons
+    const upButton = document.getElementById('upButton');
+    const downButton = document.getElementById('downButton');
+    const leftButton = document.getElementById('leftButton');
+    const rightButton = document.getElementById('rightButton');
+    
+    // Check if we're on a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     // Using Web Audio API for sound effects
     
     // Use these simple audio beeps instead of MP3 files
@@ -229,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ArrowRight: false
     };
     
+    // Keyboard controls
     window.addEventListener('keydown', (e) => {
         if (keys.hasOwnProperty(e.key)) {
             keys[e.key] = true;
@@ -243,6 +253,75 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('keyup', (e) => {
         if (keys.hasOwnProperty(e.key)) {
             keys[e.key] = false;
+        }
+    });
+    
+    // Touch controls for mobile
+    // Handle button presses for the D-pad
+    function addTouchHandlers(button, direction) {
+        // Touch events
+        button.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent scrolling when touching the button
+            pacman.nextDirection = direction;
+        });
+        
+        button.addEventListener('touchend', (e) => {
+            e.preventDefault(); // Prevent scrolling
+        });
+        
+        // Mouse events for testing on desktop
+        button.addEventListener('mousedown', () => {
+            pacman.nextDirection = direction;
+        });
+    }
+    
+    // Show mobile controls programmatically if we detect a mobile device
+    if (isMobile) {
+        document.querySelector('.mobile-controls').style.display = 'block';
+    }
+    
+    // Add touch handlers to the direction buttons
+    addTouchHandlers(upButton, 'up');
+    addTouchHandlers(downButton, 'down');
+    addTouchHandlers(leftButton, 'left');
+    addTouchHandlers(rightButton, 'right');
+    
+    // Add swipe controls on the game canvas itself
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    canvas.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    });
+    
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Prevent scrolling when swiping on the canvas
+    });
+    
+    canvas.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        // Calculate the distance and direction of the swipe
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+        
+        // Determine if the swipe was horizontal or vertical
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal swipe
+            if (dx > 20) {
+                pacman.nextDirection = 'right';
+            } else if (dx < -20) {
+                pacman.nextDirection = 'left';
+            }
+        } else {
+            // Vertical swipe
+            if (dy > 20) {
+                pacman.nextDirection = 'down';
+            } else if (dy < -20) {
+                pacman.nextDirection = 'up';
+            }
         }
     });
     
@@ -1324,6 +1403,14 @@ document.addEventListener('DOMContentLoaded', () => {
             gameRunning = true;
             startButton.textContent = 'Pause';
             gameLoop();
+            
+            // If on mobile, try to request fullscreen for better experience
+            if (isMobile && document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    // Silently ignore fullscreen errors
+                    console.log("Fullscreen request failed:", err);
+                });
+            }
         } else {
             gameRunning = false;
             startButton.textContent = 'Resume';
