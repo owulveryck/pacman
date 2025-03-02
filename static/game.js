@@ -304,6 +304,89 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Gyroscope control variables
+    let isGyroscopeAvailable = false;
+    let useGyroscope = false;
+    let gyroSensitivity = 5; // Sensitivity threshold
+    
+    // Check if device supports gyroscope
+    if (isMobile && window.DeviceOrientationEvent) {
+        // Create gyroscope toggle button
+        const gyroToggle = document.createElement('div');
+        gyroToggle.className = 'gyro-toggle';
+        gyroToggle.innerHTML = '<input type="checkbox" id="gyroToggle"><label for="gyroToggle">Use Gyroscope</label>';
+        document.querySelector('.controls').appendChild(gyroToggle);
+        
+        const gyroToggleCheckbox = document.getElementById('gyroToggle');
+        
+        // Request permission for device orientation if needed
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS 13+ requires permission
+            gyroToggleCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            if (permissionState === 'granted') {
+                                useGyroscope = true;
+                                isGyroscopeAvailable = true;
+                                initGyroscope();
+                                // Hide standard controls when using gyroscope
+                                document.querySelector('.mobile-controls').style.display = 'none';
+                            } else {
+                                alert('Gyroscope permission denied');
+                                this.checked = false;
+                            }
+                        })
+                        .catch(console.error);
+                } else {
+                    useGyroscope = false;
+                    document.querySelector('.mobile-controls').style.display = 'block';
+                }
+            });
+        } else {
+            // For non-iOS devices
+            gyroToggleCheckbox.addEventListener('change', function() {
+                useGyroscope = this.checked;
+                if (useGyroscope) {
+                    initGyroscope();
+                    document.querySelector('.mobile-controls').style.display = 'none';
+                } else {
+                    document.querySelector('.mobile-controls').style.display = 'block';
+                }
+            });
+            isGyroscopeAvailable = true;
+        }
+    }
+    
+    function initGyroscope() {
+        window.addEventListener('deviceorientation', handleOrientation);
+    }
+    
+    function handleOrientation(event) {
+        if (!useGyroscope || !gameRunning) return;
+        
+        // Get beta (tilt front-to-back) and gamma (tilt left-to-right) values
+        const beta = event.beta;  // front to back tilt in degrees, range: -180 to 180
+        const gamma = event.gamma; // left to right tilt in degrees, range: -90 to 90
+        
+        // Check if we need to change direction based on device tilt
+        if (Math.abs(beta) > Math.abs(gamma)) {
+            // Device is tilted more front-to-back than left-to-right
+            if (beta > gyroSensitivity) {
+                pacman.nextDirection = 'down';
+            } else if (beta < -gyroSensitivity) {
+                pacman.nextDirection = 'up';
+            }
+        } else {
+            // Device is tilted more left-to-right
+            if (gamma > gyroSensitivity) {
+                pacman.nextDirection = 'right';
+            } else if (gamma < -gyroSensitivity) {
+                pacman.nextDirection = 'left';
+            }
+        }
+    }
+    
     // Show mobile controls programmatically if we detect a mobile device
     if (isMobile) {
         document.querySelector('.mobile-controls').style.display = 'block';
@@ -329,6 +412,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     canvas.addEventListener('touchend', (e) => {
+        if (useGyroscope) return; // Skip swipe detection if gyroscope is active
+        
         const touchEndX = e.changedTouches[0].clientX;
         const touchEndY = e.changedTouches[0].clientY;
         

@@ -56,7 +56,7 @@ button:hover {
     background-color: #FFD700;
 }
 
-.sound-control {
+.sound-control, .gyro-toggle {
     display: flex;
     align-items: center;
     gap: 5px;
